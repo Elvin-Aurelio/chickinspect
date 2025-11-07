@@ -58,71 +58,71 @@ if uploaded_file is not None:
 
 
     # ======== RECOMMENDATION LOGIC ========
-def get_urgency(prob):
-    if prob >= 0.70:
-        return "HIGH"
-    elif prob >= 0.40:
-        return "MEDIUM"
-    else:
-        return "LOW"
-
-def get_recommendation(pred_class, prob):
-    urgency = get_urgency(prob)
-    rec = {"title": pred_class, "urgency": urgency, "actions": [], "notes": []}
-
-    if pred_class.lower().startswith("coccid"):
-        rec["actions"] = [
-            "Isolate suspected birds immediately.",
-            "Remove and replace litter; disinfect the coop.",
-            "Provide supportive care (electrolytes, warmth).",
-            "Consult veterinarian for anticoccidial treatment or prescription."
-        ]
-        rec["notes"] = [
-            "Coccidiosis often related to poor hygiene and contaminated feed/water.",
-            "Consider reviewing litter management and vaccination program."
-        ]
-
-    elif pred_class.lower().startswith("healthy"):
-        rec["actions"] = [
-            "Continue routine monitoring (check feces, feed intake, behaviour).",
-            "Record this result in farm log."
-        ]
-        rec["notes"] = [
-            "No immediate action required, but maintain good biosecurity and nutrition."
-        ]
-
-    elif "new" in pred_class.lower() or "nd" in pred_class.lower():
-        rec["actions"] = [
-            "Strictly isolate the affected flock/house.",
-            "Stop movement of birds, products, and equipment.",
-            "Contact local veterinarian and report to livestock authority if required.",
-            "Implement urgent biosecurity: disinfect boots, equipment, restrict access."
-        ]
-        rec["notes"] = [
-            "Newcastle Disease can be highly contagious and cause high mortality.",
-            "Follow vet guidance for culling or targeted treatment if recommended."
-        ]
-
-    elif "salmonella" in pred_class.lower():
-        rec["actions"] = [
-            "Isolate suspected birds and practice strict hygiene.",
-            "Avoid handling eggs/meat without protection—Salmonella is zoonotic.",
-            "Consult veterinarian for testing and possible antibiotic or management plan."
-        ]
-        rec["notes"] = [
-            "Investigate feed and water sources, and sanitize feeding equipment.",
-            "Cook or handle animal products safely to prevent spread to humans."
-        ]
-
-    # Tailor urgency-specific prompt
-    if rec["urgency"] == "HIGH":
-        rec["priority_note"] = "URGENT: Contact a veterinarian immediately and restrict movements."
-    elif rec["urgency"] == "MEDIUM":
-        rec["priority_note"] = "Monitor closely and prepare to escalate (collect samples, contact vet)."
-    else:
-        rec["priority_note"] = "Low urgency: continue routine monitoring."
-
-    return rec
+    def get_urgency(prob):
+        if prob >= 0.70:
+            return "HIGH"
+        elif prob >= 0.40:
+            return "MEDIUM"
+        else:
+            return "LOW"
+    
+    def get_recommendation(pred_class, prob):
+        urgency = get_urgency(prob)
+        rec = {"title": pred_class, "urgency": urgency, "actions": [], "notes": []}
+    
+        if pred_class.lower().startswith("coccid"):
+            rec["actions"] = [
+                "Isolate suspected birds immediately.",
+                "Remove and replace litter; disinfect the coop.",
+                "Provide supportive care (electrolytes, warmth).",
+                "Consult veterinarian for anticoccidial treatment or prescription."
+            ]
+            rec["notes"] = [
+                "Coccidiosis often related to poor hygiene and contaminated feed/water.",
+                "Consider reviewing litter management and vaccination program."
+            ]
+    
+        elif pred_class.lower().startswith("healthy"):
+            rec["actions"] = [
+                "Continue routine monitoring (check feces, feed intake, behaviour).",
+                "Record this result in farm log."
+            ]
+            rec["notes"] = [
+                "No immediate action required, but maintain good biosecurity and nutrition."
+            ]
+    
+        elif "new" in pred_class.lower() or "nd" in pred_class.lower():
+            rec["actions"] = [
+                "Strictly isolate the affected flock/house.",
+                "Stop movement of birds, products, and equipment.",
+                "Contact local veterinarian and report to livestock authority if required.",
+                "Implement urgent biosecurity: disinfect boots, equipment, restrict access."
+            ]
+            rec["notes"] = [
+                "Newcastle Disease can be highly contagious and cause high mortality.",
+                "Follow vet guidance for culling or targeted treatment if recommended."
+            ]
+    
+        elif "salmonella" in pred_class.lower():
+            rec["actions"] = [
+                "Isolate suspected birds and practice strict hygiene.",
+                "Avoid handling eggs/meat without protection—Salmonella is zoonotic.",
+                "Consult veterinarian for testing and possible antibiotic or management plan."
+            ]
+            rec["notes"] = [
+                "Investigate feed and water sources, and sanitize feeding equipment.",
+                "Cook or handle animal products safely to prevent spread to humans."
+            ]
+    
+        # Tailor urgency-specific prompt
+        if rec["urgency"] == "HIGH":
+            rec["priority_note"] = "URGENT: Contact a veterinarian immediately and restrict movements."
+        elif rec["urgency"] == "MEDIUM":
+            rec["priority_note"] = "Monitor closely and prepare to escalate (collect samples, contact vet)."
+        else:
+            rec["priority_note"] = "Low urgency: continue routine monitoring."
+    
+        return rec
 
 # usage (after predictions computed)
 top_prob = float(predictions[predicted_index])
@@ -166,3 +166,4 @@ if st.button("Save result & recommendation"):
 
 else:
     st.info("Please upload a chicken feces image to start the analysis.")
+
