@@ -86,7 +86,7 @@ ChikInspect/
    ```bash
    git clone https://github.com/<your-username>/ChikInspect.git
    cd ChikInspect
-````
+```
 
 2. **Install dependencies**
 
