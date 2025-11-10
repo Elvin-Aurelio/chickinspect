@@ -124,46 +124,47 @@ if uploaded_file is not None:
     
         return rec
 
-# usage (after predictions computed)
-top_prob = float(predictions[predicted_index])
-recommendation = get_recommendation(predicted_class, top_prob)
-
-st.markdown("## Recommendation")
-st.write(f"**Detected:** {recommendation['title']}")
-st.write(f"**Urgency level:** {recommendation['urgency']}")
-st.info(recommendation['priority_note'])
-
-st.markdown("### Recommended Actions")
-for a in recommendation['actions']:
-    st.write(f"- {a}")
-
-if recommendation.get("notes"):
-    st.markdown("### Notes / Context")
-    for n in recommendation['notes']:
-        st.write(f"- {n}")
-st.markdown("---")
-st.caption("⚠️ Disclaimer: This tool provides AI-based analysis and recommendations. Always consult a qualified veterinarian for definitive diagnosis and treatment.")
-# Optional: Save recommendation + prediction to local CSV
-if st.button("Save result & recommendation"):
-    import json, datetime, csv
-    fname = "history_results.csv"
-    row = {
-        "time": datetime.datetime.utcnow().isoformat(),
-        "filename": uploaded_file.name if uploaded_file is not None else "",
-        "predicted_class": recommendation['title'],
-        "probability": top_prob,
-        "urgency": recommendation['urgency'],
-        "actions": "; ".join(recommendation['actions'])
-    }
-    # write header if new
-    write_header = not os.path.exists(fname)
-    with open(fname, "a", newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=list(row.keys()))
-        if write_header:
-            writer.writeheader()
-        writer.writerow(row)
-    st.success(f"Saved to {fname}")
+    # usage (after predictions computed)
+    top_prob = float(predictions[predicted_index])
+    recommendation = get_recommendation(predicted_class, top_prob)
+    
+    st.markdown("## Recommendation")
+    st.write(f"**Detected:** {recommendation['title']}")
+    st.write(f"**Urgency level:** {recommendation['urgency']}")
+    st.info(recommendation['priority_note'])
+    
+    st.markdown("### Recommended Actions")
+    for a in recommendation['actions']:
+        st.write(f"- {a}")
+    
+    if recommendation.get("notes"):
+        st.markdown("### Notes / Context")
+        for n in recommendation['notes']:
+            st.write(f"- {n}")
+    st.markdown("---")
+    st.caption("⚠️ Disclaimer: This tool provides AI-based analysis and recommendations. Always consult a qualified veterinarian for definitive diagnosis and treatment.")
+    # Optional: Save recommendation + prediction to local CSV
+    if st.button("Save result & recommendation"):
+        import json, datetime, csv
+        fname = "history_results.csv"
+        row = {
+            "time": datetime.datetime.utcnow().isoformat(),
+            "filename": uploaded_file.name if uploaded_file is not None else "",
+            "predicted_class": recommendation['title'],
+            "probability": top_prob,
+            "urgency": recommendation['urgency'],
+            "actions": "; ".join(recommendation['actions'])
+        }
+        # write header if new
+        write_header = not os.path.exists(fname)
+        with open(fname, "a", newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=list(row.keys()))
+            if write_header:
+                writer.writeheader()
+            writer.writerow(row)
+        st.success(f"Saved to {fname}")
 
 else:
     st.info("Please upload a chicken feces image to start the analysis.")
+
 
